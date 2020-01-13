@@ -37,7 +37,6 @@ struct graphics_context_t {
 	~graphics_context_t();
 
 	void makeCurrent();
-	void swapBuffers();
 	void unmakeCurrent();
 };
 
@@ -81,10 +80,6 @@ void graphics_context_t::makeCurrent() {
 
 void graphics_context_t::unmakeCurrent() {
 	eglMakeCurrent(NULL, EGL_NO_SURFACE, EGL_NO_SURFACE, NULL);
-}
-
-void graphics_context_t::swapBuffers() {
-	// buffer swapping is implicit on device (MLGraphicsEndFrame)
 }
 
 graphics_context_t::~graphics_context_t() {
@@ -170,7 +165,7 @@ int main() {
 		MLResult frame_result = MLGraphicsBeginFrame(graphics_client, &frame_params, &frame_handle, &virtual_camera_array);
 
 		if (frame_result == MLResult_Ok) {
-			// 11. Prepare rendering for each camera/eye
+			// 12. Prepare rendering for each camera/eye
 			for (int camera = 0; camera < 2; ++camera) {
 				glBindFramebuffer(GL_FRAMEBUFFER, graphics_context.framebuffer_id);
 				glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, virtual_camera_array.color_id, 0, camera);
@@ -178,25 +173,23 @@ int main() {
 
 				const MLRectf& viewport = virtual_camera_array.viewport;
 				glViewport((GLint)viewport.x, (GLint)viewport.y, (GLsizei)viewport.w, (GLsizei)viewport.h);
+
+				// 13. TODO: Here we display later our content
 				glClearColor(0.0, 0.0, 0.0, 0.0);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				// 12. Here we display later our content
 
-				// 13. Bind the frame buffer
+				// 14. Bind the frame buffer
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				MLGraphicsSignalSyncObjectGL(graphics_client, virtual_camera_array.virtual_cameras[camera].sync_object);
 			}
 
-			// 14. Finish the frame
+			// 15. Finish the frame
 			result = MLGraphicsEndFrame(graphics_client, frame_handle);
 
 			if (MLResult_Ok != result) {
 				ML_LOG_TAG(Error, APP_TAG, "MLGraphicsEndFrame() error: %d", result);
 			}
-
-			// 15. Swap buffers (Double buffering)
-			graphics_context.swapBuffers();
 		}
 		else if (frame_result != MLResult_Timeout) {
 			// Sometimes it fails with timeout when device is busy

@@ -6,7 +6,7 @@ SRCS = 	src/main.cpp
  
 DEFS.device = ML_DEVICE
 
-USES = ml_sdk stdc++
+USES = ml_sdk OpenGL stdc++
 
 OPTIONS = standard-c++/11 exceptions/on warn/on
 
