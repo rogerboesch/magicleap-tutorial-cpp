@@ -1,0 +1,15 @@
+KIND = program
+
+INCS =  src/
+
+SRCS = 	src/main.cpp \
+       	src/RBShader.cpp \
+       	src/RBCylinder.cpp
+
+ 
+DEFS.device = ML_DEVICE
+
+USES = ml_sdk OpenGL stdc++
+
+OPTIONS = standard-c++/11 exceptions/on warn/on
+

@@ -1,5 +1,6 @@
-# Magic Leap One - Game Development using C++
+## Magic Leap One - Game Development using C++
 
-Companion code for Part 1 of the Tutorial you find on my Medium channel at:
-https://medium.com/@rogerboesch/magicleap-one-c-tutorial-part-i-d29eed664042
+Companion code for Part 1&2 of the Tutorial you find on my [blog](www.rogerboesch.com)
 
+- [Part 1](http://www.rogerboesch.com/magicleap-cpp-part1/)
+- [Part 2](http://www.rogerboesch.com/magicleap-cpp-part2/)

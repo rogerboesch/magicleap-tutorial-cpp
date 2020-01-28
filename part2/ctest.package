@@ -1,0 +1,4 @@
+REFS = ctest
+
+DATAS.device= \
+  		shader/ : shader/
