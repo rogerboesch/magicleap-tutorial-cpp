@@ -14,7 +14,7 @@ public:
 	GLuint GetUniformLocation(std::string name);
 	
 	void Load(const char *vertex_file_path, const char *fragment_file_path);
-
+	
 private:
 	GLuint _programID;
 };

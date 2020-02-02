@@ -34,4 +34,7 @@ private:
 	glm::vec3 _position;
 	glm::vec3 _rotation;
 	glm::vec3 _scale;
+
+	// Part 3: Added to support laserpointer
+	glm::mat4 _transform;
 };
