@@ -20,8 +20,9 @@
 #include <GLES3/gl3ext.h>
 
 #include <ml_logging.h>
-#include <ml_lifecycle.h>
 #include <ml_graphics.h>
+#include <ml_lifecycle.h>
+#include <ml_perception.h>
 
 // -----------------------------------------------------------------------------
 // 1. Types and definitions
@@ -102,6 +103,11 @@ static void on_resume(void* user_data) {
 	ML_LOG_TAG(Info, APP_TAG, "Lifecycle call on_resume()");
 }
 
+// Structures
+struct application_context_t {
+	int dummy_value;
+};
+
 // -----------------------------------------------------------------------------
 // 4. Main
 
@@ -116,17 +122,33 @@ int main() {
 	lifecycle_callbacks.on_pause = on_pause;
 	lifecycle_callbacks.on_resume = on_resume;
 
+	struct application_context_t application_context;
+	application_context.dummy_value = 2;
+
 	// 6. Initialize application lifecycle
-	MLResult result = MLLifecycleInit(&lifecycle_callbacks, nullptr);
+	MLResult result = MLLifecycleInit(&lifecycle_callbacks, (void*)&application_context);
 
 	if (result != MLResult_Ok) {
 		ML_LOG_TAG(Error, APP_TAG, "Failed to initialize lifecycle system");
+		return -1;
 	}
 	else {
 		ML_LOG_TAG(Debug, APP_TAG, "Lifecycle system started");
 	}
 
-	// 7. Create OpenGL context and create framebuffer
+	// 7. Initialize perception system
+	MLPerceptionSettings perception_settings;
+	if (MLResult_Ok != MLPerceptionInitSettings(&perception_settings)) {
+		ML_LOG_TAG(Error, APP_TAG, "Failed to initialize perception");
+		return -1;
+	}
+
+	if (MLResult_Ok != MLPerceptionStartup(&perception_settings)) {
+		ML_LOG_TAG(Error, APP_TAG, "Failed to startup perception");
+		return -1;
+	}
+
+	// 8. Create OpenGL context and create framebuffer
 	graphics_context.makeCurrent();
 	glGenFramebuffers(1, &graphics_context.framebuffer_id);
 
@@ -135,17 +157,18 @@ int main() {
 	MLHandle graphics_client = ML_INVALID_HANDLE;
 	MLGraphicsCreateClientGL(&graphics_options, opengl_context, &graphics_client);
 
-	// 8. Ready for application lifecycle
+	// 9. Ready for application lifecycle
 	if (MLLifecycleSetReadyIndication() != MLResult_Ok) {
 		ML_LOG_TAG(Error, APP_TAG, "Failed to indicate lifecycle readyness");
+		return -1;
 	}
 	else {
 		ML_LOG_TAG(Debug, APP_TAG, "Lifecycle system ready");
 	}
 
-	// 9. The main/game loop
+	// 10. The main/game loop
 	while (true) {
-		// 10. Initialze a frame
+		// 11. Initialize a frame
 		MLGraphicsFrameParams frame_params;
 		result = MLGraphicsInitFrameParams(&frame_params);
 
@@ -161,11 +184,11 @@ int main() {
 		MLHandle frame_handle;
 		MLGraphicsVirtualCameraInfoArray virtual_camera_array;
 
-		// 11. Begin the frame
+		// 12. Begin the frame
 		MLResult frame_result = MLGraphicsBeginFrame(graphics_client, &frame_params, &frame_handle, &virtual_camera_array);
 
 		if (frame_result == MLResult_Ok) {
-			// 12. Prepare rendering for each camera/eye
+			// 13. Prepare rendering for each camera/eye
 			for (int camera = 0; camera < 2; ++camera) {
 				glBindFramebuffer(GL_FRAMEBUFFER, graphics_context.framebuffer_id);
 				glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, virtual_camera_array.color_id, 0, camera);
@@ -174,17 +197,16 @@ int main() {
 				const MLRectf& viewport = virtual_camera_array.viewport;
 				glViewport((GLint)viewport.x, (GLint)viewport.y, (GLsizei)viewport.w, (GLsizei)viewport.h);
 
-				// 13. TODO: Here we display later our content
+				// 14. TODO: Here we display later our content
 				glClearColor(0.0, 0.0, 0.0, 0.0);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-				// 14. Bind the frame buffer
+				// 15. Bind the frame buffer
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				MLGraphicsSignalSyncObjectGL(graphics_client, virtual_camera_array.virtual_cameras[camera].sync_object);
 			}
 
-			// 15. Finish the frame
+			// 16. Finish the frame
 			result = MLGraphicsEndFrame(graphics_client, frame_handle);
 
 			if (MLResult_Ok != result) {
@@ -197,7 +219,7 @@ int main() {
 		}
 	}
 
-	// 16. End of game loop, clean app and exit
+	// 17. End of game loop, clean app and exit
 	ML_LOG_TAG(Debug, APP_TAG, "End application loop");
 
 	graphics_context.unmakeCurrent();

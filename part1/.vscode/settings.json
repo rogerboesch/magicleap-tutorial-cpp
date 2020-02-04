@@ -1,0 +1,11 @@
+{
+    "lumin_mabu_file": "ctest.package",
+    "lumin_package_name": "ctest",
+    "lumin_exe_name": "ctest",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
+        "${config.lumin_sdk}/include/**"
+    ],
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.cppStandard": "c++11"
+}
