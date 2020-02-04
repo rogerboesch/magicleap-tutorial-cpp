@@ -7,4 +7,4 @@ Companion code of the tutorial:
 
 
 Visit also my [blog](http://www.rogerboesch.com). I write regularly about AR/VR for the Magic Leap 1 and Oculus Quest.
-Also I'm an exctive Retro Game Developer for Sinclair ZX & QL, C64, Atari 2600 & 800XL, Oric Atmos, Micro BBC and many more!
+Also I'm an active Retro Game Developer for Sinclair ZX & QL, C64, Atari 2600 & 800XL, Oric Atmos, Micro BBC and many more!
