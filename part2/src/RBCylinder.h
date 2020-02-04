@@ -22,6 +22,7 @@ public:
 	void ApplyShader(Shader& shader);
 	void Render(glm::mat4 projectionMatrix);
 
+	void Dump();
 private:
 	GLuint _progId;
 	GLuint _vaoId;

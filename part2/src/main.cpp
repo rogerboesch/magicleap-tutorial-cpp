@@ -6,8 +6,10 @@
 #include <cmath>
 
 #include <ml_logging.h>
-#include <ml_lifecycle.h>
 #include <ml_graphics.h>
+#include <ml_lifecycle.h>
+#include <ml_perception.h>
+#include <ml_head_tracking.h>
 #include <ml_input.h>
 
 #include "RBShader.h"
@@ -17,6 +19,7 @@
 // Part 2: Define a color
 
 #define COLOR_RED glm::vec3(1,0,0)
+#define COLOR_GREEN glm::vec3(0,1,0)
 
 // -----------------------------------------------------------------------------
 // Part 2: ML helper functions
@@ -143,23 +146,36 @@ int main() {
 
 	MLLoggingEnableLogLevel(MLLogLevel_Debug);
 
-	// 5. Assign call application lifecycle callback functions
+	// Assign call application lifecycle callback functions
 	MLLifecycleCallbacks lifecycle_callbacks = {};
 	lifecycle_callbacks.on_stop = on_stop;
 	lifecycle_callbacks.on_pause = on_pause;
 	lifecycle_callbacks.on_resume = on_resume;
 
-	// 6. Initialize application lifecycle
+	// Initialize application lifecycle
 	MLResult result = MLLifecycleInit(&lifecycle_callbacks, nullptr);
 
 	if (result != MLResult_Ok) {
 		ML_LOG_TAG(Error, APP_TAG, "Failed to initialize lifecycle system");
+		return -1;
 	}
 	else {
 		ML_LOG_TAG(Debug, APP_TAG, "Lifecycle system started");
 	}
 
-	// 7. Create OpenGL context and create framebuffer
+	// Initialize perception system
+	MLPerceptionSettings perception_settings;
+	if (MLResult_Ok != MLPerceptionInitSettings(&perception_settings)) {
+		ML_LOG_TAG(Error, APP_TAG, "Failed to initialize perception");
+		return -1;
+	}
+
+	if (MLResult_Ok != MLPerceptionStartup(&perception_settings)) {
+		ML_LOG_TAG(Error, APP_TAG, "Failed to startup perception");
+		return -1;
+	}
+
+	// Create OpenGL context and create framebuffer
 	graphics_context.makeCurrent();
 	glGenFramebuffers(1, &graphics_context.framebuffer_id);
 
@@ -168,13 +184,31 @@ int main() {
 	MLHandle graphics_client = ML_INVALID_HANDLE;
 	MLGraphicsCreateClientGL(&graphics_options, opengl_context, &graphics_client);
 
-	// 8. Ready for application lifecycle
+	// Part 2: Set up the head tracker
+	MLHandle head_tracker;
+	MLResult head_track_result = MLHeadTrackingCreate(&head_tracker);
+	MLHeadTrackingStaticData head_static_data;
+
+	if (MLResult_Ok == head_track_result && MLHandleIsValid(head_tracker)) {
+		MLHeadTrackingGetStaticData(head_tracker, &head_static_data);
+	}
+	else {
+		ML_LOG_TAG(Error, APP_TAG, "Failed to create head tracker");
+	}
+
+	// Ready for application lifecycle
 	if (MLLifecycleSetReadyIndication() != MLResult_Ok) {
 		ML_LOG_TAG(Error, APP_TAG, "Failed to indicate lifecycle readyness");
+		return -1;
 	}
 	else {
 		ML_LOG_TAG(Debug, APP_TAG, "Lifecycle system ready");
 	}
+
+	// Part 2: Create the input handler
+	ML_LOG_TAG(Debug, APP_TAG, "Create input system (controller)");
+	MLHandle input;
+	CHECK(MLInputCreate(NULL, &input));
 
 	// Part 2: Instantiate the shader 
 	Shader shader3D = Shader();
@@ -185,11 +219,8 @@ int main() {
 	cylinder.ApplyShader(shader3D);
 	cylinder.SetColor(COLOR_RED);
 
-	// Part 2: Create the inpiut handler
-	MLHandle input;
-	CHECK(MLInputCreate(NULL, &input));
-
-	// 9. The main/game loop
+	// The main/game loop
+	ML_LOG_TAG(Debug, APP_TAG, "Enter main loop");
 	while (true) {
 		// Part 2: Get state of the Controller
 		MLInputControllerState input_states[MLInput_MaxControllers];
@@ -199,14 +230,16 @@ int main() {
             if (input_states[k].is_connected) {
                 if (input_states[k].button_state[MLInputControllerButton_Bumper]) {
 					glm::vec3 pos = cylinder.GetPosition();
-					cylinder.SetPosition(pos.x, pos.y, pos.z+1.0);	
+					cylinder.SetPosition(pos.x, pos.y+0.001, pos.z);	
+					cylinder.SetColor(COLOR_GREEN);
 
-					glm::vec3 scl = cylinder.GetScale();
-					cylinder.SetScale(scl.x+0.1, scl.y+0.1, scl.z+0.1);	
+					ML_LOG_TAG(Debug, APP_TAG, "Bumper pressed");
+					cylinder.Dump();
                 }
             }
         }
-			// 10. Initialze a frame
+			
+		// Initialize a frame
 		MLGraphicsFrameParams frame_params;
 		result = MLGraphicsInitFrameParams(&frame_params);
 
@@ -222,11 +255,11 @@ int main() {
 		MLHandle frame_handle;
 		MLGraphicsVirtualCameraInfoArray virtual_camera_array;
 
-		// 11. Begin the frame
+		// Begin the frame
 		MLResult frame_result = MLGraphicsBeginFrame(graphics_client, &frame_params, &frame_handle, &virtual_camera_array);
 
 		if (frame_result == MLResult_Ok) {
-			// 12. Prepare rendering for each camera/eye
+			// Prepare rendering for each camera/eye
 			for (int camera = 0; camera < 2; ++camera) {
 				glBindFramebuffer(GL_FRAMEBUFFER, graphics_context.framebuffer_id);
 				glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, virtual_camera_array.color_id, 0, camera);
@@ -235,7 +268,6 @@ int main() {
 				const MLRectf& viewport = virtual_camera_array.viewport;
 				glViewport((GLint)viewport.x, (GLint)viewport.y, (GLsizei)viewport.w, (GLsizei)viewport.h);
 
-				// 13. TODO: Here we display later our content
 				glClearColor(0.0, 0.0, 0.0, 0.0);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -246,12 +278,12 @@ int main() {
 				// Part 2: Render the object
 				cylinder.Render(projectionMatrix);
 
-				// 14. Bind the frame buffer
+				// Bind the frame buffer
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				MLGraphicsSignalSyncObjectGL(graphics_client, virtual_camera_array.virtual_cameras[camera].sync_object);
 			}
 
-			// 15. Finish the frame
+			// Finish the frame
 			result = MLGraphicsEndFrame(graphics_client, frame_handle);
 
 			if (MLResult_Ok != result) {
@@ -264,7 +296,7 @@ int main() {
 		}
 	}
 
-	// 16. End of game loop, clean app and exit
+	// End of game loop, clean app and exit
 	ML_LOG_TAG(Debug, APP_TAG, "End application loop");
 
 	graphics_context.unmakeCurrent();

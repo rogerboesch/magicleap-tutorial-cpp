@@ -35,6 +35,10 @@ static void MakeCylinder(GLfloat *vertices, int numSteps) {
 Cylinder::Cylinder(int steps) {
 	_steps = steps;
 	_verts = (_steps + 1) * 2; 
+
+	_position = glm::vec3(0);
+	_rotation = glm::vec3(0);
+	_scale = glm::vec3(0.25);
 }
 
 Cylinder::~Cylinder() {
@@ -64,7 +68,7 @@ void Cylinder::ApplyShader(Shader& shader) {
 	glBindVertexArray(0);
 	glUseProgram(0);
 
-	ML_LOG_TAG(Verbose, APP_TAG, "Uniform location (%d, %d, %d), program %d", _colorId, _projId, location, _progId);
+	ML_LOG_TAG(Debug, APP_TAG, "Uniform location (%d, %d, %d), program %d", _colorId, _projId, location, _progId);
 }
 
 void Cylinder::Render(glm::mat4 projectionMatrix) {
@@ -81,4 +85,19 @@ void Cylinder::Render(glm::mat4 projectionMatrix) {
 	glBindVertexArray(0);
 
 	glUseProgram(0);
+}
+
+void Cylinder::Dump() {
+	ML_LOG_TAG(Debug, APP_TAG, "---------------- Dump of cylinder ----------------");
+	ML_LOG_TAG(Debug, APP_TAG, "Prog ID:  %d", _progId);
+	ML_LOG_TAG(Debug, APP_TAG, "VAO ID:   %d", _vaoId);
+	ML_LOG_TAG(Debug, APP_TAG, "Proj ID:  %d", _projId);
+	ML_LOG_TAG(Debug, APP_TAG, "Color ID: %d", _colorId);
+	ML_LOG_TAG(Debug, APP_TAG, "Steps:    %d",    _steps);
+	ML_LOG_TAG(Debug, APP_TAG, "Verts:    %d",    _verts);
+	ML_LOG_TAG(Debug, APP_TAG, "Color:    %f,%f,%f", _color[0], _color[1], _color[2]);
+	ML_LOG_TAG(Debug, APP_TAG, "Position: %f,%f,%f", _position.x, _position.y, _position.z);
+	ML_LOG_TAG(Debug, APP_TAG, "Rotation: %f,%f,%f", _rotation.x, _rotation.y, _rotation.z);
+	ML_LOG_TAG(Debug, APP_TAG, "Scale:    %f,%f,%f", _scale.x, _scale.y, _scale.z);
+	ML_LOG_TAG(Debug, APP_TAG, "--------------------------------------------------");
 }
