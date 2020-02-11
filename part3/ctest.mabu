@@ -1,0 +1,21 @@
+KIND = program
+
+INCS =  src/
+
+SRCS = 	src/Game.cpp \
+       	src/RBActor.cpp \
+       	src/RBClock.cpp \
+       	src/RBEngine.cpp \
+       	src/RBLevelLoader.cpp \
+       	src/RBLines.cpp \
+       	src/RBPrimitive.cpp \
+       	src/RBShader.cpp \
+       	src/RBVText.cpp \
+       	src/main.cpp
+ 
+DEFS.device = ML_DEVICE
+
+USES = ml_sdk OpenGL stdc++
+
+OPTIONS = standard-c++/11 exceptions/on warn/on
+SHLIBS = ml_privileges

@@ -1,0 +1,25 @@
+<manifest
+	xmlns:ml="magicleap"
+	ml:package="com.rogerboesch.ctest"
+	ml:version_code="1"
+	ml:version_name="1.0">
+	<application
+		ml:visible_name="C TEST"
+                ml:sdk_version="1.0"
+                ml:min_api_level="1">
+                <uses-privilege ml:name="WorldReconstruction"/>
+                <uses-privilege ml:name="LowLatencyLightwear" />
+
+                <uses-privilege ml:name="GesturesSubscribe" />
+                <uses-privilege ml:name="GesturesConfig" />
+                <uses-privilege ml:name="CameraCapture"/>
+                <uses-privilege ml:name="PwFoundObjRead"/>
+		<component
+			ml:name=".fullscreen"
+			ml:visible_name="C TEST"
+			ml:binary_name="bin/ctest"
+			ml:type="Fullscreen">
+			<icon ml:model_folder="Empty" ml:portal_folder="Empty" />
+		</component>
+	</application>
+</manifest>
