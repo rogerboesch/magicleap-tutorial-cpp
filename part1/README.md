@@ -30,7 +30,7 @@ This will solve the issue and you can install and open the program now.
 
 ![The Lab App](/assets/1_lab_1.png)
 
-Next use the **Package Manager** button and select straight away the "Native Framework" options.
+Next use the **Package Manager** button and select straight away the *Native Framework* options.
 
 ![The Lab App](/assets/1_lab_2.png)
 
@@ -40,13 +40,13 @@ Press the *Apply changes* button and wait until all is downloaded. From now on y
 # Create a Certificate
 
 To build an app we also need a certificate. These keys can also be created directly on the creator portal.
-Just go the Publish tab, press the *Add new button and give the certificate a name. Use also **test** for this (as me), so it will work without any change after.
+Just go the Publish tab, press the *Add new* button and give the certificate a name. Use also **test** for this (as me), so it will work without any change after.
 
 After you pressed the *Generate* button, the private and public key will be generated and a zip file containing the private key is automatically downloaded.
 
 It's **important** that you store the **test.privkey** file which is inside of the zip file in the same folder as your **test.cert** file which can be downloaded after some seconds from the same page. Put both files into a folder folder and create an evironment variable pointing to it:
 
-```export MLCERT=\path\test.cert```
+```export MLCERT=\<path to your cert file>\test.cert```
 
 *Note: The certificate can be used for as many apps you want. It's not related to the app bundle, but to your account!*
 
@@ -75,21 +75,21 @@ Congrats! You have already compiled and linked your first C/C++ program for the 
 
 First let me briefly explain what the meaning of the different file is:
 
-- ```build.sh``` - A simple shell script so you don't have to remind the syntax to build. Also it can be easy used to call from inside your editor. It calls the package manager and also install the app o device after
-- ```ctest.mabu``` - This is the equivalent of a make file and tells the toolchain what we want to create, what source files we need for it as well as some options. See more below
-- ```ctest.package``` - The list of resources we "pack" in the app bundle
+- ```build.sh``` A simple shell script so you don't have to remind the syntax to build. Also it can be easy used to call from inside your editor. It calls the package manager and also install the app o device after
+- ```ctest.mabu``` This is the equivalent of a make file and tells the toolchain what we want to create, what source files we need for it as well as some options. See more below
+- ```ctest.package``` The list of resources we "pack" in the app bundle
 manifest.xml - The app manifest
-- ```src/main.cpp``` - The Hello World for ML (Just logs the text, nothing fancy yet)
+- ```src/main.cpp``` The Hello World for ML (Just logs the text, nothing fancy yet)
 
 
 ## The (meta-) make file: ctest.mabu
 
-- ```KIND=program``` - We want create a program, an ML app
-- ```INCS=src/``` - Where the compiler searches for the header files
-- ```SRCS=src/main.cpp``` - The source file(s) we compile and link together
-- ```DEFS.device=ML_DEVICE``` - A precompiler flag we set, so we know in the source that we compile for the ML (We will use that later)
-- ```USES=ml_sdk stdc++ OpenGL``` - The libraries we link
-- ```OPTIONS=standard-c++/11 exceptions/on warn/on``` - Some compiler options
+- ```KIND=program``` We want create a program, an ML app
+- ```INCS=src/``` Where the compiler searches for the header files
+- ```SRCS=src/main.cpp``` The source file(s) we compile and link together
+- ```DEFS.device=ML_DEVICE``` A precompiler flag we set, so we know in the source that we compile for the ML (We will use that later)
+- ```USES=ml_sdk stdc++ OpenGL``` The libraries we link
+- ```OPTIONS=standard-c++/11 exceptions/on warn/on``` Some compiler options
 
 
 So far it's not so different from any C/C++ development on other platforms. We just us *mabu* provided by the SDK as a make tool. Of course you can use any other make tool as well. But this one is very simple to setup, use and extend. So I highly recommend.
@@ -100,48 +100,41 @@ So far it's not so different from any C/C++ development on other platforms. We j
 Besides the binary mostly every app will also have some assets to load and use at runtime. Like sounds, 3D files, shaders etc.
 The package file is where all this gets defined. So far it's very simple but we will extend soon:
 
-- ```REFS = ctest``` - Reference to the mabu file (project name, must be the same as the mabu file, like ctest.mabu)
-- ```DATAS.device = \``` - Specifies the path from where the assets get loaded and where inside the app bundle the they get stored.
+- ```REFS = ctest``` Reference to the mabu file (project name, must be the same as the mabu file, like ctest.mabu)
+- ```DATAS.device = \``` Specifies the path from where the assets get loaded and where inside the app bundle the they get stored.
 
 
 ## The Manifest File: ctest.manifest
 
-```
-    <manifest
+```xml
+<manifest
     xmlns:ml="magicleap"
     ml:package="com.rogerboesch.ctest"
     ml:version_code="1"
     ml:version_name="1.0">
-    <application
-    ml:visible_name="C TEST"
-    ml:sdk_version="1.0"
-    ml:min_api_level="1">
-    <uses-privilege ml:name="WorldReconstruction"/>
-    <uses-privilege ml:name="LowLatencyLightwear" />
-    <component
-    ml:name=".fullscreen"
-    ml:visible_name="C TEST"
-    ml:binary_name="bin/ctest"
-    ml:type="Fullscreen">
-    <icon ml:model_folder="Empty" ml:portal_folder="Empty" />
-    </component>
+    <application ml:visible_name="C TEST" ml:sdk_version="1.0" ml:min_api_level="1">
+        <uses-privilege ml:name="WorldReconstruction"/>
+        <uses-privilege ml:name="LowLatencyLightwear" />
+        <component ml:name=".fullscreen" ml:visible_name="C TEST" ml:binary_name="bin/ctest" ml:type="Fullscreen">
+            <icon ml:model_folder="Empty" ml:portal_folder="Empty" />
+        </component>
     </application>
-    </manifest>
+</manifest>
 ```
 
 The manifest file contains some information used at runtime by the ML platform. Similar to an iOS or Android app it contains the visible name (showed to the user), but also privacy related settings, among others
 Important for now are:
 
-- ```ml:package="com.rogerboesch.ctest"``` - The bundle id of the app
-- ```ml:name=".fullscreen"``` - Defines that our app will run in fullscreen mode, which means runs immersive on the device.
-- ```ml:binary_name="bin/ctest"``` - The binary that gets started by the platform when the user starts an app
+- ```ml:package="com.rogerboesch.ctest"``` The bundle id of the app
+- ```ml:name=".fullscreen"``` Defines that our app will run in fullscreen mode, which means runs immersive on the device.
+- ```ml:binary_name="bin/ctest"``` The binary that gets started by the platform when the user starts an app
 
 Still not impressed? :) I agree, just show a log message on a mixed reality device is not what blows away.
 So at least let's start integrating OpenGL in this part 1 so we can focus in the next articles on the stuff that makes more fun …
 Before we can start with the fancy things, we must create some boilerplate code at first, very similar to any mobile device to use OpenGL.
 
 
-# Initialize Graphics: OpenGL(ES)
+# Initialize Graphics: OpenGL
 
 This is one of the more boring things to do and also not a very well documented part. Because the entire ML platform and API is written in C (like most platforms) we use this for the startup code and have to initialize all. After we can "forget" it because we will work on a more abstract level and just in C++. The base we create here, can be used for any kind of games or apps without modification. So it's a one time job mainly.
 
