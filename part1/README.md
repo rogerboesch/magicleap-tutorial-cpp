@@ -1,4 +1,4 @@
-![Part I](/assets/1_title.png)
+![Part I](/assets/1_title.jpeg)
 
 # Frameworks on the Magic Leap One
 
@@ -82,7 +82,7 @@ manifest.xml - The app manifest
 - ```src/main.cpp``` - The Hello World for ML (Just logs the text, nothing fancy yet)
 
 
-## The (meta-) make file - ctest.mabu
+## The (meta-) make file: ctest.mabu
 
 - ```KIND=program``` - We want create a program, an ML app
 - ```INCS=src/``` - Where the compiler searches for the header files
@@ -95,7 +95,7 @@ manifest.xml - The app manifest
 So far it's not so different from any C/C++ development on other platforms. We just us *mabu* provided by the SDK as a make tool. Of course you can use any other make tool as well. But this one is very simple to setup, use and extend. So I highly recommend.
 
 
-## The Package File - ctest.package
+## The Package File: ctest.package
 
 Besides the binary mostly every app will also have some assets to load and use at runtime. Like sounds, 3D files, shaders etc.
 The package file is where all this gets defined. So far it's very simple but we will extend soon:
@@ -104,7 +104,7 @@ The package file is where all this gets defined. So far it's very simple but we 
 - ```DATAS.device = \``` - Specifies the path from where the assets get loaded and where inside the app bundle the they get stored.
 
 
-## The Manifest File - ctest.manifest
+## The Manifest File: ctest.manifest
 
 ```
     <manifest
@@ -141,13 +141,13 @@ So at least let's start integrating OpenGL in this part 1 so we can focus in the
 Before we can start with the fancy things, we must create some boilerplate code at first, very similar to any mobile device to use OpenGL.
 
 
-# Initialize Graphics - OpenGL(ES)
+# Initialize Graphics: OpenGL(ES)
 
 This is one of the more boring things to do and also not a very well documented part. Because the entire ML platform and API is written in C (like most platforms) we use this for the startup code and have to initialize all. After we can "forget" it because we will work on a more abstract level and just in C++. The base we create here, can be used for any kind of games or apps without modification. So it's a one time job mainly.
 
 You can find the code I will describe below in the ```main-ogl.cpp``` file instead of ```main.cpp```. We will us this one in part two then.
 
-*To make it better readable I just describe here the code from main-ogl.cpp without showing, but you can find the full source code (here)[src/main-ogl.cpp] with the corresponding numbers. So I highly suggest to open the file while you read.*
+*To make it better readable I just describe here the code from main-ogl.cpp without showing, but you can find the full source code [here](src/main-ogl.cpp) with the corresponding numbers. So I highly suggest to open the file while you read.*
 
 1. A basic structure to save the OpenGL related vars and assign some important functions related to them
 2. Define the OpenGLES configuration and create the context. Also define the functions to activate and deactivate the context. Just use this as is.
@@ -176,13 +176,13 @@ With this part 1 we have make the groundwork for the cooler things in the next p
 use the controller to manipulate them.
 
 # Tutorial:
-Part 1 - Tool Setup and first step
-(Part 2 - Render objects and use of the controller)[../part2]
-(Part 3 - Create a simple game: MazeRace[../part3]
-(Part 4 - Improving MazeRace and macOS Bonus Code[../part4]
+- Part 1 - Tool Setup and first step
+- [Part 2 - Render objects and use of the controller](../part2)
+- [Part 3 - Create a simple game: MazeRace](../part3)
+- [Part 4 - Improving MazeRace and macOS Bonus Code](../part4)
 
 
 *Remark:*
 *In the SDK is also a sample called application_framework which uses a similar approach I describe here, but focused more on apps. Unfortunately there is almost no documentation or info attached, so I believed it makes sense to start with this tutorial from scratch.*
 
-Visit also my blog at (rogerboesch.com)[http://www.rogerboesch.com] where I write about retro game development for the machines of the 80s like the Sinclair ZX Spectrum, Vectrex, Atari 2600 and many others.
+Visit also my blog at [rogerboesch.com](http://www.rogerboesch.com) where I write about retro game development for the machines of the 80s like the Sinclair ZX Spectrum, Vectrex, Atari 2600 and many others.
