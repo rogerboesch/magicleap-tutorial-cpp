@@ -196,7 +196,7 @@ Ok, take a break now! The “hard” part is done and we can just use this first
 You have seen now all parts to finally visualize the cylinder. I just have to instantiate it now, apply the shader and call render. Do see as fast as possible a result, I do that for this part 2 directly in the ```main.cpp``` file. In the next part (where we actually implement the game) I will start creating a small game engine and implement it there. But for now:
 
 ```c++
-…
+...
 // Part 2: Instantiate the shader
 Shader shader3D = Shader(16);
 shader3D.Load(“shader/standard3D.vert”, “shader/standard.frag”);
@@ -208,7 +208,7 @@ cylinder.SetColor(COLOR_RED);
 
 // The main/game loop
 while (true) {
-…
+...
 ```
 
 Directly before the main loop (*line 12–13*) we must insert the new code for part 2 in ```main.cpp```:
@@ -218,7 +218,7 @@ Directly before the main loop (*line 12–13*) we must insert the new code for p
 - That’s all to create an object and render it, it’s also not much more complex.
 
 ```c++
-…
+...
 glClearColor(0.0, 0.0, 0.0, 0.0);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -228,14 +228,14 @@ glm::mat4 projectionMatrix = rb_projection_matrix(current_camera) * rb_camera_ma
 
 // Part 2: Render the object
 cylinder.Render(projectionMatrix);
-…
+...
 ```
 
 The right place to render an object (the cylinder) is directly after cleared the frame buffer (*line 5*), what I have already done in the previous part.
 
 So the only things remains, is to call the ```Render()``` method of the cylinder as you see in *line 12*.
 
-But wait… from where we got the projection matrix which is needed as a parameter. The projection matrix in a 3D game represents the (virtual) camera; the view we have to the game scene. And this is where the “magic” comes in on a device like the ML.
+But wait... from where we got the projection matrix which is needed as a parameter. The projection matrix in a 3D game represents the (virtual) camera; the view we have to the game scene. And this is where the “magic” comes in on a device like the ML.
 
 We have here two cameras (one for each eye) and therefore two projection matrices. I must render therefore also each object **twice**.
 

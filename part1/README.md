@@ -70,7 +70,7 @@ Before I describe the different files, please run at first ```./build.sh``` to 
 
 ![Build results](/assets/1_cli.png)
 
-Congrats! You have already compiled and linked your first C/C++ program for the ML. Of course, not yet very impressive, but wait… step by step :)
+Congrats! You have already compiled and linked your first C/C++ program for the ML. Of course, not yet very impressive, but wait... step by step :)
 
 
 First let me briefly explain what the meaning of the different file is:
@@ -130,7 +130,7 @@ Important for now are:
 - ```ml:binary_name="bin/ctest"``` The binary that gets started by the platform when the user starts an app
 
 Still not impressed? :) I agree, just show a log message on a mixed reality device is not what blows away.
-So at least let's start integrating OpenGL in this part 1 so we can focus in the next articles on the stuff that makes more fun …
+So at least let's start integrating OpenGL in this part 1 so we can focus in the next articles on the stuff that makes more fun ...
 Before we can start with the fancy things, we must create some boilerplate code at first, very similar to any mobile device to use OpenGL.
 
 
