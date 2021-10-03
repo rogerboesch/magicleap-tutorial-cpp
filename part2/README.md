@@ -1,4 +1,4 @@
-![Part II](/assets/2_title.jpeg)
+![Part II](/assets/2_title.png)
 
 In the first part of the tutorial I have setup the tools and build the groundwork to create a game in C++.
 
