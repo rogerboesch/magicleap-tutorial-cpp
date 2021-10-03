@@ -2,7 +2,7 @@
 
 # Frameworks on the Magic Leap One
 
-On the Magic Leap One ("ML1" hereafter) are three level of abstractions to create games or apps. On the highest level are the game engines like Unity and Unreal. They provide a great way of abstraction and also a wide support of assets, game logic, models, sound and abstraction of the game scene, like camera and more. It's by far the easiest way to create a great experience.
+On the Magic Leap One ("ML" hereafter) are three level of abstractions to create games or apps. On the highest level are the game engines like Unity and Unreal. They provide a great way of abstraction and also a wide support of assets, game logic, models, sound and abstraction of the game scene, like camera and more. It's by far the easiest way to create a great experience.
 
 One level deeper is the the Lumin Runtime framework (*No longer supported*). It provides some useful C++ classes and abstract most of the low level API's from the programmer. It also has some support for models, sounds, animations etc. and it's great for apps and as main advantage supports the creation of landscape apps. But (at least for now) it's not designed to create games (or just simple ones).
 
@@ -10,7 +10,7 @@ One level deeper is the the Lumin Runtime framework (*No longer supported*). It 
 
 The level we are interested in this tutorial is the lowest level. The direct access trough the C-API. We will also create an abstraction layer (aka game engine) in C++, but at least the startup and initialisation we must do in plain C accessing the platform API. There is just bare API and OpenGL support at this level, but the advantage (or burden) to implement all by yourself exactly in the way needed. 
 
-The reason why I write a tutorial on this is because there is almost no public information about it and also it's the level where you can port your own game or even engine without limits. As I do for my Vectrex and ZX Spectrum emulator app. But of course a lot of work. We will not create a game in this tutorial series which could be put into the app store, but at least a mini game which shows all the techniques from scratch and will be a perfect fundament to create your own native games (and apps) on the ML1. **Have fun!**
+The reason why I write a tutorial on this is because there is almost no public information about it and also it's the level where you can port your own game or even engine without limits. As I do for my Vectrex and ZX Spectrum emulator app. But of course a lot of work. We will not create a game in this tutorial series which could be put into the app store, but at least a mini game which shows all the techniques from scratch and will be a perfect fundament to create your own native games (and apps) on the ML. **Have fun!**
 
 
 # Tool Setup
@@ -70,7 +70,7 @@ Before I describe the different files, please run at first ```./build.sh``` to 
 
 ![Build results](/assets/1_cli.png)
 
-Congrats! You have already compiled and linked your first C/C++ program for the ML1. Of course, not yet very impressive, but wait… step by step :)
+Congrats! You have already compiled and linked your first C/C++ program for the ML. Of course, not yet very impressive, but wait… step by step :)
 
 
 First let me briefly explain what the meaning of the different file is:
@@ -122,7 +122,7 @@ The package file is where all this gets defined. So far it's very simple but we 
 </manifest>
 ```
 
-The manifest file contains some information used at runtime by the ML platform. Similar to an iOS or Android app it contains the visible name (showed to the user), but also privacy related settings, among others
+The manifest file contains some information used at runtime by the  platform. Similar to an iOS or Android app it contains the visible name (showed to the user), but also privacy related settings, among others
 Important for now are:
 
 - ```ml:package="com.rogerboesch.ctest"``` The bundle id of the app
