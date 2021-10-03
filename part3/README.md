@@ -224,18 +224,17 @@ I don’t go that far to create a tool here, but I use the approach to write the
 
 This is actually more simple to do as you might think. The level is described by ASCII characters as in this example. The real level is of course bigger and it’s also not limited; you can make it as big as you like.
 
-...
-
 ```
+
+...
 0-.-0000-------.......X------0  
 0-.------------.------.------0  
 0-X............@.......------0  
 0----------------------------0  
 100000000000000000000000000001  
-```
-
 ...
 
+```
 
 - ```@``` Player position
 - ```#``` User information position
